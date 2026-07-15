@@ -1,0 +1,49 @@
+# ============================================================
+# Visual Memory AI — Configuration
+# ============================================================
+
+detection:
+  model: "yolov8n.pt"              # YOLOv8 nano model (fast, good for real-time)
+  confidence: 0.45                  # Minimum detection confidence
+  target_classes:                   # Filter to common household objects
+    - "person"
+    - "cell phone"
+    - "laptop"
+    - "book"
+    - "bottle"
+    - "cup"
+    - "backpack"
+    - "handbag"
+    - "scissors"
+    - "remote"
+    - "keyboard"
+    - "mouse"
+    - "clock"
+    - "vase"
+    - "chair"
+    - "tv"
+    - "umbrella"
+    - "suitcase"
+
+tracking:
+  tracker: "botsort.yaml"           # BoT-SORT tracker config (built into ultralytics)
+
+memory:
+  embedding_model: "ViT-B/32"      # CLIP model for visual embeddings
+  embedding_dim: 512                # Dimension of CLIP embeddings
+  db_path: "data/memories.db"       # SQLite database path
+  faiss_index_path: "data/memories.faiss"  # FAISS index path
+  id_map_path: "data/id_map.json"  # FAISS ID mapping path
+  memory_interval_seconds: 5        # Min interval between storing same object
+  max_memories: 100000              # Max memories before pruning oldest
+
+camera:
+  source: 0                         # Webcam index (0 = default) or path to video file
+  width: 640
+  height: 480
+  fps: 30
+
+dashboard:
+  page_title: "Visual Memory AI"
+  theme: "dark"
+  memory_log_size: 50               # Number of recent memories to show in log

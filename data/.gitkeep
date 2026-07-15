@@ -1,0 +1,4 @@
+# This directory stores persistent memory data
+# - memories.db: SQLite database with memory metadata
+# - memories.faiss: FAISS vector index
+# - id_map.json: FAISS index to memory ID mapping
