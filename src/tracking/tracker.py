@@ -131,17 +131,22 @@ class ObjectTracker:
 
         tracked_objects = []
         for result in results:
-            if result.boxes is None or result.boxes.id is None:
+            if result.boxes is None or len(result.boxes) == 0:
                 continue
 
             boxes = result.boxes
+            has_ids = boxes.id is not None
             for i in range(len(boxes)):
                 # Extract bounding box
                 xyxy = boxes.xyxy[i].cpu().numpy().astype(int)
                 x1, y1, x2, y2 = xyxy
 
                 # Extract tracking info
-                track_id = int(boxes.id[i].cpu().numpy())
+                if has_ids:
+                    track_id = int(boxes.id[i].cpu().numpy())
+                else:
+                    track_id = 1000 + (i % 500)
+
                 class_id = int(boxes.cls[i].cpu().numpy())
                 class_name = self.model.names[class_id]
                 confidence = float(boxes.conf[i].cpu().numpy())

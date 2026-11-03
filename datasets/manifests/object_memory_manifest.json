@@ -1,0 +1,62 @@
+[
+  {
+    "sighting_id": "bench_0001",
+    "timestamp": "2026-10-26T09:15:00Z",
+    "camera_id": "camera_01",
+    "zone_id": "study_desk_center",
+    "object_class": "laptop",
+    "instance_label": "thinkpad_x1",
+    "bbox": [210, 140, 470, 360],
+    "visibility": "visible",
+    "event_label": "first_seen",
+    "ground_truth_location": "study_desk_center"
+  },
+  {
+    "sighting_id": "bench_0002",
+    "timestamp": "2026-10-26T09:20:15Z",
+    "camera_id": "camera_01",
+    "zone_id": "study_desk_left",
+    "object_class": "cell phone",
+    "instance_label": "pixel_8",
+    "bbox": [80, 240, 180, 370],
+    "visibility": "visible",
+    "event_label": "first_seen",
+    "ground_truth_location": "study_desk_left"
+  },
+  {
+    "sighting_id": "bench_0003",
+    "timestamp": "2026-10-26T09:35:40Z",
+    "camera_id": "camera_01",
+    "zone_id": "study_desk_right",
+    "object_class": "bottle",
+    "instance_label": "hydroflask_blue",
+    "bbox": [480, 180, 560, 380],
+    "visibility": "partially_occluded",
+    "event_label": "observed",
+    "ground_truth_location": "study_desk_right"
+  },
+  {
+    "sighting_id": "bench_0004",
+    "timestamp": "2026-10-26T10:05:10Z",
+    "camera_id": "camera_02",
+    "zone_id": "kitchen_counter",
+    "object_class": "cup",
+    "instance_label": "ceramic_mug_white",
+    "bbox": [150, 190, 260, 310],
+    "visibility": "visible",
+    "event_label": "first_seen",
+    "ground_truth_location": "kitchen_counter"
+  },
+  {
+    "sighting_id": "bench_0005",
+    "timestamp": "2026-10-26T10:25:30Z",
+    "camera_id": "camera_01",
+    "zone_id": "study_desk_right",
+    "object_class": "bottle",
+    "instance_label": "hydroflask_blue",
+    "bbox": [480, 180, 560, 380],
+    "visibility": "visible",
+    "event_label": "reappeared",
+    "ground_truth_location": "study_desk_right"
+  }
+]

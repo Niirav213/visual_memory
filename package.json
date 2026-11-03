@@ -1,0 +1,19 @@
+{
+  "name": "visual-memory-ai",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Visual Memory AI — Everyday Object Memory & Retrieval Platform",
+  "scripts": {
+    "dev": "npm --prefix apps/web run dev",
+    "server": "node server.js",
+    "build": "npm --prefix apps/web run build",
+    "start": "npm --prefix apps/web start",
+    "lint": "npm --prefix apps/web run lint"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.3.0",
+    "http-proxy-middleware": "^3.0.10",
+    "ws": "^8.22.0"
+  }
+}

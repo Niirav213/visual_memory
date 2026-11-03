@@ -1,0 +1,52 @@
+# Visual Memory AI — Production Configuration (Section 11)
+
+video:
+  source: 0
+  frame_sampling_fps: 3
+  reconnect_on_disconnect: true
+  resolution: [640, 480]
+
+detection:
+  model: yolov8n.pt
+  confidence_threshold: 0.45
+  # Strict object-only target classes.
+  # Person-related identification and pedestrian features excluded from product scope.
+  target_classes:
+    - laptop
+    - cell phone
+    - bottle
+    - cup
+    - backpack
+    - handbag
+    - book
+    - remote
+    - keyboard
+    - mouse
+    - clock
+    - scissors
+    - umbrella
+    - vase
+    - chair
+
+tracking:
+  algorithm: botsort
+  tracker_yaml: botsort.yaml
+  persist_tracks_within_stream: true
+
+memory:
+  min_seconds_between_similar_sightings: 5
+  store_representative_crops: true
+  retain_video_clips: false
+  embedding_model: ViT-B/32
+  embedding_dim: 512
+
+storage:
+  postgres_url: ${DATABASE_URL:-sqlite:///data/memories.db}
+  qdrant_url: ${QDRANT_URL:-local_faiss}
+  redis_url: ${REDIS_URL:-redis://localhost:6379}
+  media_root: ./data/media
+
+query:
+  require_evidence_for_last_seen: true
+  return_timestamp_and_camera: true
+  report_unknown_identity_when_uncertain: true

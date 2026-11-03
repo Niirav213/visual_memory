@@ -126,9 +126,17 @@ def main():
     last_store_times = {}
     memory_interval = config["memory"]["memory_interval_seconds"]
 
-    # Open camera/video source
+    # Open camera/video source (with DirectShow support on Windows)
     source = config["camera"]["source"]
-    cap = cv2.VideoCapture(source)
+    cap = None
+    if isinstance(source, int) or (isinstance(source, str) and str(source).isdigit()):
+        try:
+            cap = cv2.VideoCapture(int(source), cv2.CAP_DSHOW)
+        except Exception:
+            pass
+    if cap is None or not cap.isOpened():
+        cap = cv2.VideoCapture(source)
+
     if not cap.isOpened():
         print(f"[ERROR] Cannot open video source: {source}")
         sys.exit(1)

@@ -1,177 +1,195 @@
 # 🧠 Visual Memory AI — From Seeing to Remembering
 
-> An AI system that detects objects, tracks them across video frames, stores visual memories, and answers natural language questions about where and when objects were last seen — like giving a camera a memory.
-
-![Python](https://img.shields.io/badge/python-3.9%2B-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
-![Status](https://img.shields.io/badge/status-active-brightgreen)
+> **Scalable, production-oriented visual memory system for everyday objects.**  
+> Continuously records object sightings across camera feeds, associates observations with spatial zones and timestamps, and answers natural-language questions with verifiable visual evidence rather than assumptions.
 
 ---
 
-## ✨ Features
-
-- 🎯 **Real-time object detection** powered by YOLOv8
-- 🔗 **Persistent tracking** across frames with BoT-SORT, so the same object keeps its identity over time
-- 🧬 **Visual & text embeddings** via CLIP ViT-B/32 for semantic search
-- 🗂️ **Hybrid memory store** — FAISS for fast vector similarity search, SQLite for structured metadata
-- 💬 **Natural language queries** — ask where or when something was last seen
-- 📊 **Interactive dashboard** built with Streamlit, plus a lightweight CLI mode
+## 🎯 Key Scope Clarification
+This system is strictly designed to remember **everyday physical objects** (e.g., laptop, phone, bottle, cup, bag, book, keys, remote, scissors) and answer **where and when each object was last observed**.  
+*Pedestrian tracking, person identification, and face re-identification features are deliberately excluded from this object-centric architecture.*
 
 ---
 
-## 🏗️ Architecture
+## 🏗️ Target Architecture
 
 ```
-Camera/Video → YOLOv8 Detection → BoT-SORT Tracking → CLIP Embedding → FAISS + SQLite Memory
-                                                                              ↓
-                                          User Query → CLIP Text Embedding → Vector Search → Response
-```
-
-### Core Modules
-
-| Module | Technology | Purpose |
-|--------|-----------|---------|
-| **Detection** | YOLOv8 (Ultralytics) | Real-time object detection |
-| **Tracking** | BoT-SORT | Persistent object identity across frames |
-| **Embedding** | CLIP ViT-B/32 | Visual & text feature extraction |
-| **Memory Store** | FAISS + SQLite | Vector similarity search + metadata |
-| **Query Engine** | Template NLP | Natural language question answering |
-| **Dashboard** | Streamlit | Interactive web interface |
-
----
-
-## 🚀 Quick Start
-
-### Prerequisites
-
-- Python 3.9 or higher
-- A webcam or video file for input
-- (Optional) CUDA-capable GPU for faster inference
-
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/your-org/visualmemory.git
-cd visualmemory
-```
-
-### 2. Create a Virtual Environment (recommended)
-
-```bash
-python -m venv venv
-source venv/bin/activate      # On Windows: venv\Scripts\activate
-```
-
-### 3. Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Run the Streamlit Dashboard
-
-```bash
-streamlit run app.py
-```
-
-### 5. Or Run the CLI Version
-
-```bash
-python main.py
+Camera Feeds (Webcam / RTSP / Video)
+       │
+       ▼
+[1. Ingestion Service] (Frame Sampling & Bounded Queue)
+       │
+       ▼
+[2. Detection Service] (YOLOv8 Object-Centric Inference)
+       │
+       ▼
+[3. Tracking Service] (BoT-SORT / ByteTrack Short-Term Identity)
+       │
+       ▼
+[4. Embedding Service] (OpenCLIP ViT-B/32 Visual Crop Projections)
+       │
+       ▼
+[5. Memory Worker & Persistence] (SQLite Metadata + FAISS Vectors + Media Storage)
+       │
+       ▼
+[6. Query Engine & FastAPI] (SQL Filters + Vector Similarity + Temporal Logic)
+       │
+       ▼
+[7. Next.js Web Dashboard] (Overview • Live Vision • Search • Timeline • Ask • Observability)
 ```
 
 ---
 
-## 📁 Project Structure
+## 💻 Production Technology Stack
+
+| Layer | Technology | Purpose |
+|---|---|---|
+| **Frontend** | Next.js 14, React 18, TypeScript, Tailwind CSS, Lucide | Production-grade dashboard with glassmorphism UI |
+| **API Backend** | FastAPI, Pydantic v2, Uvicorn | Typed endpoints, validation, Swagger docs, WebSockets |
+| **Video Ingestion** | OpenCV, MJPEG Streamer, Bounded Queue | Multi-source camera ingestion with backpressure protection |
+| **Object Detection** | Ultralytics YOLOv8 (`yolov8n.pt`) | Real-time everyday object detection |
+| **Object Tracking** | BoT-SORT / ByteTrack | Intra-stream track continuity without false long-term assumptions |
+| **Visual Embeddings** | OpenCLIP / CLIP (`ViT-B/32`) | Shared text-image semantic embedding space (512-d) |
+| **Persistence** | SQLite + FAISS (`IndexFlatIP`) | Indexed metadata store & vector similarity search |
+| **Containerization** | Docker, Docker Compose | Multi-container local & cloud deployments |
+| **Observability** | psutil, Telemetry Collectors | Real-time CPU, RAM, FPS, p50/p95/p99 latency metrics |
+
+---
+
+## 📁 Repository Structure
 
 ```
-visualmemory/
-├── config/
-│   └── settings.yaml        # Configuration (models, thresholds, paths)
-├── src/
-│   ├── detection/
-│   │   └── detector.py      # YOLOv8 object detection
-│   ├── tracking/
-│   │   └── tracker.py       # BoT-SORT multi-object tracking
-│   ├── memory/
-│   │   ├── embedder.py      # CLIP visual embeddings
-│   │   ├── vector_store.py  # FAISS vector index
-│   │   └── memory_db.py     # SQLite memory metadata
-│   ├── query/
-│   │   └── engine.py        # NL query processing
-│   └── utils/
-│       └── visualization.py # Drawing & annotation helpers
-├── data/                     # Persistent storage (auto-created)
-├── app.py                    # Streamlit dashboard
-├── main.py                   # CLI entry point
-├── requirements.txt          # Python dependencies
+visual-memory-ai/
+├── apps/
+│   ├── api/                    # Production FastAPI backend
+│   │   ├── main.py             # REST endpoints, WebSocket & worker coordination
+│   │   └── seed_data.py        # Realistic initial memories & snapshot seeder
+│   └── web/                    # Next.js 14 + React + TypeScript frontend
+│       ├── app/
+│       │   ├── page.tsx          # 1. Overview Dashboard
+│       │   ├── live/page.tsx     # 2. Live Vision & Spatial Tracking
+│       │   ├── search/page.tsx   # 3. Visual Memory Search
+│       │   ├── timeline/page.tsx # 4. Memory Chronological Timeline
+│       │   ├── ask/page.tsx      # 5. Ask Visual Memory (NL Q&A + Speech)
+│       │   └── observability/    # 6. System Observability & Worker Telemetry
+│       ├── components/           # Reusable UI components (Navbar, Modals, StatCards)
+│       └── lib/                  # Typed API client & data interfaces
+├── services/
+│   ├── ingestion/              # Multi-source video streamer with backpressure
+│   ├── detection/              # YOLOv8 object detector with zone mapping
+│   ├── tracking/               # BoT-SORT multi-object tracker
+│   ├── embedding/              # CLIP visual crop and text embedder
+│   ├── memory_worker/          # Idempotent SQLite persistence & FAISS index
+│   └── query_engine/           # Evidence-backed hybrid NL query engine
+├── packages/
+│   ├── shared_types/           # Shared Pydantic schemas (MemoryEvent, QueryResponse)
+│   └── api_client/             # Reusable API client SDK
+├── ml/
+│   ├── configs/                # YAML configuration files (config.yaml)
+│   ├── evaluation/             # Benchmark suite (benchmark.py)
+│   └── experiments/            # Model fine-tuning scripts
+├── datasets/
+│   ├── manifests/              # Object memory benchmark ground-truth JSON
+│   └── evaluation-splits/      # Test splits
+├── infrastructure/
+│   ├── docker/                 # Production Dockerfiles (API & Web)
+│   └── monitoring/             # Telemetry configurations
+├── tests/
+│   ├── unit/                   # Pytest unit tests (Query engine, persistence)
+│   └── integration/            # FastAPI endpoint integration tests
+├── data/                       # Persistent databases & evidence media snapshots
+├── docker-compose.yml          # Multi-container orchestration
+├── app.py                      # Original Streamlit prototype (internal experiment tool)
 └── README.md
 ```
 
 ---
 
-## 💬 Example Queries
+## 🌐 Next.js Frontend Dashboard (6 Core Pages)
 
-Once the system has observed a scene for a while, try asking:
-
-- "Where is my laptop?"
-- "When did I last see my phone?"
-- "How many times have you seen a bottle?"
-- "What objects have you seen?"
-- "Where is the cup?"
-
----
-
-## 🛠️ Configuration
-
-All runtime behavior is controlled from `config/settings.yaml`:
-
-| Setting | Description | Default |
-|---------|-------------|---------|
-| **Detection model** | `yolov8n.pt` (nano), `yolov8s.pt` (small), `yolov8m.pt` (medium) | `yolov8n.pt` |
-| **Confidence threshold** | Minimum detection confidence to accept | `0.45` |
-| **Target classes** | Filter detections to specific object types | all classes |
-| **Memory interval** | Minimum seconds between re-storing the same object | `5` |
-| **Camera source** | Webcam index or path to a video file | `0` |
+1. **Overview (`/`)**: High-level KPIs (Total Sightings, Unique Objects, Active Cameras, FPS), active camera cards, and a real-time recent sighting feed with snapshot inspection.
+2. **Live Vision (`/live`)**: Live camera stream viewing `/api/cameras/camera_01/stream` with bounding box overlays, target inspector, camera switcher, and stream pause/resume controls.
+3. **Visual Memory Search (`/search`)**: Multi-attribute filtering by object class, camera, zone (`study_desk`, `kitchen_counter`, `living_room_table`, `entryway_shelf`), and semantic text search powered by CLIP embeddings.
+4. **Memory Timeline (`/timeline`)**: Chronological visual history with automatic detection of:
+   - `Observed` (standard sightings)
+   - `Moved` (spatial zone transitions)
+   - `Visibility Gaps` (unobserved intervals)
+   - `Reappeared` (reappearance events)
+5. **Ask Visual Memory (`/ask`)**: Natural-language question interface answering:
+   - *"Where is my laptop?"*
+   - *"When did I last see my phone?"*
+   - *"How many times have you seen a bottle?"*
+   - *"Find the red cup near the window"*
+   - Supported by exact zone badges, camera nodes, time-ago, and clickable evidence snapshots with Web Speech read-aloud support.
+6. **System Observability (`/observability`)**: Telemetry breakdown across all 6 decoupled worker threads, CPU/RAM usage meters, queue lag gauges, and p50/p95/p99 execution latency distributions.
 
 ---
 
-## 🧩 How It Works
+## 🚀 Quick Start Guide
 
-1. **Detect** — Each frame is passed through YOLOv8 to locate objects.
-2. **Track** — BoT-SORT assigns and maintains a consistent ID for each object across frames.
-3. **Embed** — CLIP converts the cropped object image into a vector embedding.
-4. **Store** — The embedding and metadata (timestamp, location, track ID) are saved to FAISS and SQLite.
-5. **Query** — A natural language question is embedded with CLIP's text encoder and matched against stored memories to generate a response.
+### Prerequisites
+- Python 3.10+ (with PyTorch, Ultralytics, and FastAPI)
+- Node.js 18+ and npm
+
+### 1. Start the FastAPI Core Backend
+```bash
+# From the project root:
+python -m uvicorn apps.api.main:app --host 0.0.0.0 --port 8000 --reload
+```
+*API Swagger Documentation will be available at: `http://localhost:8000/docs`*
+
+### 2. Start the Next.js Frontend
+```bash
+cd apps/web
+npm run dev
+```
+*Web dashboard will be live at: `http://localhost:3000`*
+
+### 3. Run Automated Tests
+```bash
+# Run unit tests
+python -m pytest tests/unit/test_query_engine.py -v
+
+# Run API integration tests
+python -m pytest tests/integration/test_api_endpoints.py -v
+```
+
+### 4. Run Evaluation Benchmark
+```bash
+python ml/evaluation/benchmark.py
+```
+
+### 5. Run with Docker Compose
+```bash
+docker-compose up --build
+```
 
 ---
 
-## 🧪 Troubleshooting
+## 📋 Standard Memory Event Schema
 
-| Issue | Possible Fix |
-|-------|---------------|
-| Camera not detected | Check `camera_source` in `settings.yaml`, try a different index (0, 1, 2...) |
-| Slow performance | Switch to `yolov8n.pt`, or enable GPU acceleration with CUDA |
-| No query results | Ensure the object has been observed and stored before querying |
-| Import errors | Confirm dependencies installed with `pip install -r requirements.txt` in the active virtual environment |
+```json
+{
+  "event_id": "evt_000184",
+  "camera_id": "camera_01",
+  "zone_id": "study_desk",
+  "track_id": "track_0042",
+  "object_identity_id": null,
+  "class_name": "laptop",
+  "confidence": 0.94,
+  "timestamp_utc": "2026-10-26T09:30:15Z",
+  "bbox_xyxy": [210, 120, 480, 360],
+  "embedding_id": "vec_000184",
+  "snapshot_uri": "/media/snapshots/evt_000184.jpg",
+  "crop_uri": "/media/crops/evt_000184.jpg",
+  "event_label": "observed"
+}
+```
 
 ---
 
-## 🤝 Contributing
-
-Contributions are welcome! Please open an issue to discuss proposed changes, or submit a pull request with a clear description of what was changed and why.
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License. See the `LICENSE` file for details.
-
----
-
-## 👥 Team
-
-- Navya Thomas
-- Kishor N.
-- Nirav Parmar
-- Prarabdh Parmar
+## 👥 Core Project Contributors
+- **Navya Thomas**
+- **Kishor N.**
+- **Nirav Parmar**
+- **Prarabdh Parmar**
