@@ -191,5 +191,6 @@ docker-compose up --build
 ## 👥 Core Project Contributors
 - **Navya Thomas**
 - **Kishor N.**
+- **Dhyeykumar Patel**
 - **Nirav Parmar**
 - **Prarabdh Parmar**
